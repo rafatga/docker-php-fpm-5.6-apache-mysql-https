@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  php-fpm:
+    container_name: "${PHP_NAME}"
+    build:
+      context: .
+      dockerfile: ./php/Dockerfile
+    volumes:
+      - ./php/config/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - ./php/config/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ./php/config/php-fpm.conf:/usr/local/etc/php-fpm.d/zzz-phpSettings.conf
+      - ../../src:/var/www/html
+    networks:
+      - project-network
+    depends_on:
+      - mysql-db
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+    extra_hosts:
+      - host.docker.internal:host-gateway
+
+  apache-httpd:
+    container_name: "${APACHE_NAME}"
+    build:
+      context: .
+      dockerfile: ./apache/Dockerfile
+    volumes:
+      - ../../src:/var/www/html
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - project-network
+    depends_on:
+      - php-fpm
+      - mysql-db
+
+  mysql-db:
+    container_name: "${MARIADB_NAME}"
+    image: mariadb:10
+    volumes:
+      - ./mysql/sample/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      #      - ./mysql/config/my.cnf:/etc/mysql/my.cnf
+      - mysqldb_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3306:3306"
+    networks:
+      - project-network
+
+  phpmyadmin:
+    container_name: "${PHPADMIN_NAME}"
+    image: lscr.io/linuxserver/phpmyadmin:latest
+    links:
+      - mysql-db
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: mysql-db
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    networks:
+      - project-network
+
+networks:
+  project-network:
+
+volumes:
+  mysqldb_data:
