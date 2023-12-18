@@ -108,3 +108,33 @@ You can generate your own self-Signed Certificate:
 ```
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout selfsigned.key -out selfsigned.crt
 ```
+
+# Xdebug in PhpStorm with Docker
+You can follow the steps from this [tutorial](https://dev.to/jackmiras/xdebug-in-phpstorm-with-docker-2al8) but be aware that some xdebug variable can differ.
+
+Step 1: Connect docker to phpstorm
+```
+Settings > Build, Execution, Deployment > Docker
+click sign + -> write any name you want like "Docker" or "My Docker Integration"
+leave all the default options -> apply -> ok
+```
+Step 2: Configure a PHP servers (https)
+```
+Settings > PHP > Servers
+click sign + -> set this configuration:
+Name: docker - server
+Localhost: localhost
+Port: 443
+check -> use paths mappings
+folder src -> /var/www/html
+```
+Step 3: Configure a PHP servers (none https)
+```
+Settings > PHP > Servers
+click sign + -> set this configuration:
+Name: docker - server - none https
+Localhost: localhost
+Port: 80
+check -> use paths mappings
+folder src -> /var/www/html
+```
