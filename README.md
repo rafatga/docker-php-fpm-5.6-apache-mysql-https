@@ -8,16 +8,6 @@ I created this repository for other developers who may be looking to build this 
 * php:5.6-fpm-alpine
 * lscr.io/linuxserver/phpmyadmin:latest
 
-### Apache modules enabled
-* socache_shmcb_module
-* mod_headers
-* ssl_module
-* expires_module
-* rewrite_module
-* mod_deflate
-* mod_proxy
-* mod_proxy_fcgi
-
 # Features
 *The following modules are enabled by this image in addition to what the official php docker images provide*
 ### Modules enabled
@@ -27,6 +17,16 @@ I created this repository for other developers who may be looking to build this 
 * curl 
 * nodejs 
 * npm
+
+### Apache modules enabled
+* socache_shmcb_module
+* mod_headers
+* ssl_module
+* expires_module
+* rewrite_module
+* mod_deflate
+* mod_proxy
+* mod_proxy_fcgi
 
 ### PHP Modules enabled
 * apcu
